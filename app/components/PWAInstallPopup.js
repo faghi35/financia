@@ -81,14 +81,14 @@ export default function PWAInstallPopup() {
                         Installer Financia
                     </h3>
                     <p className="text-slate-500 text-sm">
-                        Ajoutez Financia à votre écran d'accueil pour un accès rapide et une expérience optimale
+                        Ajoutez Financia à votre écran d&apos;accueil pour un accès rapide et une expérience optimale
                     </p>
                 </div>
 
                 <div className="space-y-3 mb-6">
                     <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
                         <span className="text-xl">📱</span>
-                        <span className="text-sm text-slate-600">Accès rapide depuis l'écran d'accueil</span>
+                        <span className="text-sm text-slate-600">Accès rapide depuis l&apos;écran d&apos;accueil</span>
                     </div>
                     <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
                         <span className="text-xl">⚡</span>
@@ -108,8 +108,8 @@ export default function PWAInstallPopup() {
                             </p>
                             <ol className="text-sm text-sky-700 space-y-1">
                                 <li>1. Appuyez sur le bouton Partager <span className="inline-block w-5 h-5 bg-sky-200 rounded text-center leading-5">↑</span></li>
-                                <li>2. Faites défiler et appuyez sur "Sur l'écran d'accueil"</li>
-                                <li>3. Appuyez sur "Ajouter"</li>
+                                <li>2. Faites défiler et appuyez sur &quot;Sur l&apos;écran d&apos;accueil&quot;</li>
+                                <li>3. Appuyez sur &quot;Ajouter&quot;</li>
                             </ol>
                         </div>
                         <button

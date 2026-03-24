@@ -69,7 +69,7 @@ export const getRelativeDate = (date) => {
     return formatDate(date);
 };
 
-export default {
+const formatters = {
     formatCurrency,
     formatDate,
     formatDateTime,
@@ -78,3 +78,5 @@ export default {
     getMonthName,
     getRelativeDate,
 };
+
+export default formatters;
