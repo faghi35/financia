@@ -561,7 +561,7 @@ export default function Settings() {
             {/* App Info */}
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
                 <h3 className="font-semibold text-dark-800 mb-4">
-                    À propos de l'application
+                    À propos de l&apos;application
                 </h3>
 
                 <div className="space-y-3">
