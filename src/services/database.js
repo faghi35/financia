@@ -2,7 +2,7 @@
 // Service API Financia - Connexion PHP/MySQL
 // ============================================
 
-export const API_BASE_URL = 'http://financia.ehk-editions.com/index.php';
+export const API_BASE_URL = 'https://financia.ehk-editions.com/index.php';
 
 // Fonction utilitaire pour les requêtes API
 const apiRequest = async (endpoint, options = {}) => {
