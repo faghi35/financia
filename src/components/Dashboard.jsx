@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { transactionService } from '../services/database';
 import { formatCurrency, getRelativeDate } from '../utils/formatters';
@@ -161,9 +162,11 @@ export default function Dashboard() {
                     <div className="animate-spin rounded-full h-20 w-20 border-4 border-gray-200 border-t-blue-600 absolute inset-0"></div>
                     {/* Logo au centre */}
                     <div className="flex items-center justify-center h-20 w-20">
-                        <img
+                        <Image
                             src="/finance-logo.jpg"
                             alt="Financia Logo"
+                            width={48}
+                            height={48}
                             className="w-12 h-12 rounded-xl object-cover"
                         />
                     </div>
