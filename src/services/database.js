@@ -1,170 +1,297 @@
-import { openDB } from 'idb';
+// ============================================
+// Service API Financia - Connexion PHP/MySQL
+// ============================================
 
-const DB_NAME = 'financia-db';
-const DB_VERSION = 1;
-const STORE_NAME = 'transactions';
+export const API_BASE_URL = 'http://financia.ehk-editions.com/index.php';
 
-let dbPromise = null;
+// Fonction utilitaire pour les requêtes API
+const apiRequest = async (endpoint, options = {}) => {
+    const url = `${API_BASE_URL}${endpoint}`;
 
-const getDB = () => {
-    if (!dbPromise) {
-        dbPromise = openDB(DB_NAME, DB_VERSION, {
-            upgrade(db) {
-                if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    const store = db.createObjectStore(STORE_NAME, {
-                        keyPath: 'id',
-                        autoIncrement: false,
-                    });
-                    store.createIndex('date', 'date');
-                    store.createIndex('type', 'type');
-                    store.createIndex('category', 'category');
-                }
-            },
-        });
+    const defaultOptions = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    const mergedOptions = {
+        ...defaultOptions,
+        ...options,
+        headers: {
+            ...defaultOptions.headers,
+            ...options.headers,
+        },
+    };
+
+    try {
+        const response = await fetch(url, mergedOptions);
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || 'Erreur API');
+        }
+
+        return data;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
     }
-    return dbPromise;
 };
 
 export const transactionService = {
+    // Ajouter une transaction
     async addTransaction(transaction) {
-        const db = await getDB();
-        const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const newTransaction = {
-            ...transaction,
-            id,
-            createdAt: new Date().toISOString(),
-        };
-        await db.add(STORE_NAME, newTransaction);
-        return newTransaction;
+        const response = await apiRequest('/transactions', {
+            method: 'POST',
+            body: JSON.stringify(transaction),
+        });
+        return response.data;
     },
 
+    // Obtenir toutes les transactions avec filtres optionnels
     async getTransactions(filters = {}) {
-        const db = await getDB();
-        let transactions = await db.getAll(STORE_NAME);
-
-        if (filters.type) {
-            transactions = transactions.filter((t) => t.type === filters.type);
+        const user = authService.getStoredUser();
+        if (!user || !user.id) {
+            throw new Error('Utilisateur non authentifié');
         }
 
-        if (filters.category) {
-            transactions = transactions.filter(
-                (t) => t.category === filters.category
-            );
-        }
+        const params = new URLSearchParams();
+        params.append('user_id', user.id);
 
-        if (filters.startDate) {
-            transactions = transactions.filter(
-                (t) => new Date(t.date) >= new Date(filters.startDate)
-            );
-        }
+        if (filters.type) params.append('type', filters.type);
+        if (filters.category) params.append('category', filters.category);
+        if (filters.startDate) params.append('startDate', filters.startDate);
+        if (filters.endDate) params.append('endDate', filters.endDate);
+        if (filters.limit) params.append('limit', filters.limit);
 
-        if (filters.endDate) {
-            transactions = transactions.filter(
-                (t) => new Date(t.date) <= new Date(filters.endDate)
-            );
-        }
+        const queryString = params.toString();
+        const endpoint = `/transactions?${queryString}`;
 
-        transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        if (filters.limit) {
-            transactions = transactions.slice(0, filters.limit);
-        }
-
-        return transactions;
+        const response = await apiRequest(endpoint);
+        return response.data || [];
     },
 
+    // Mettre à jour une transaction
     async updateTransaction(id, data) {
-        const db = await getDB();
-        const transaction = await db.get(STORE_NAME, id);
-        if (!transaction) {
-            throw new Error('Transaction not found');
-        }
-        const updated = { ...transaction, ...data };
-        await db.put(STORE_NAME, updated);
-        return updated;
+        const response = await apiRequest(`/transactions/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+        return response.data;
     },
 
+    // Supprimer une transaction
     async deleteTransaction(id) {
-        const db = await getDB();
-        await db.delete(STORE_NAME, id);
+        await apiRequest(`/transactions/${id}`, {
+            method: 'DELETE',
+        });
         return true;
     },
 
+    // Obtenir le solde
     async getBalance() {
-        const transactions = await this.getTransactions();
-        const balance = transactions.reduce((acc, t) => {
-            return t.type === 'income' ? acc + t.amount : acc - t.amount;
-        }, 0);
-        return balance;
-    },
-
-    async getMonthlySummary(month, year) {
-        const startDate = new Date(year, month, 1).toISOString();
-        const endDate = new Date(year, month + 1, 0).toISOString();
-
-        const transactions = await this.getTransactions({
-            startDate,
-            endDate,
-        });
-
-        const summary = transactions.reduce(
-            (acc, t) => {
-                if (t.type === 'income') {
-                    acc.income += t.amount;
-                } else {
-                    acc.expense += t.amount;
-                }
-                return acc;
-            },
-            { income: 0, expense: 0 }
-        );
-
-        summary.balance = summary.income - summary.expense;
-        return summary;
-    },
-
-    async getCategoryStats(startDate, endDate) {
-        const transactions = await this.getTransactions({
-            startDate,
-            endDate,
-        });
-
-        const stats = transactions.reduce((acc, t) => {
-            if (!acc[t.category]) {
-                acc[t.category] = { income: 0, expense: 0, count: 0 };
-            }
-            if (t.type === 'income') {
-                acc[t.category].income += t.amount;
-            } else {
-                acc[t.category].expense += t.amount;
-            }
-            acc[t.category].count += 1;
-            return acc;
-        }, {});
-
-        return stats;
-    },
-
-    async exportData() {
-        const transactions = await this.getTransactions();
-        return JSON.stringify(transactions, null, 2);
-    },
-
-    async importData(jsonData) {
-        const db = await getDB();
-        const transactions = JSON.parse(jsonData);
-
-        for (const transaction of transactions) {
-            await db.put(STORE_NAME, transaction);
+        const user = authService.getStoredUser();
+        if (!user || !user.id) {
+            throw new Error('Utilisateur non authentifié');
         }
 
-        return transactions.length;
+        const response = await apiRequest(`/balance?user_id=${user.id}`);
+        return response.data.balance;
     },
 
+    // Obtenir le résumé mensuel
+    async getMonthlySummary(month, year) {
+        const user = authService.getStoredUser();
+        if (!user || !user.id) {
+            throw new Error('Utilisateur non authentifié');
+        }
+
+        const response = await apiRequest(`/summary?month=${month}&year=${year}&user_id=${user.id}`);
+        return response.data;
+    },
+
+    // Obtenir les statistiques par catégorie
+    async getCategoryStats(startDate, endDate) {
+        const user = authService.getStoredUser();
+        if (!user || !user.id) {
+            throw new Error('Utilisateur non authentifié');
+        }
+
+        const params = new URLSearchParams();
+        params.append('user_id', user.id);
+        if (startDate) params.append('startDate', startDate);
+        if (endDate) params.append('endDate', endDate);
+
+        const queryString = params.toString();
+        const endpoint = `/stats?${queryString}`;
+
+        const response = await apiRequest(endpoint);
+        return response.data || {};
+    },
+
+    // Exporter les données
+    async exportData() {
+        const response = await apiRequest('/export');
+        return JSON.stringify(response.data, null, 2);
+    },
+
+    // Importer des données
+    async importData(jsonData) {
+        const transactions = JSON.parse(jsonData);
+        const response = await apiRequest('/import', {
+            method: 'POST',
+            body: JSON.stringify({ transactions }),
+        });
+        return response.data.imported;
+    },
+
+    // Supprimer toutes les données
     async clearAllData() {
-        const db = await getDB();
-        await db.clear(STORE_NAME);
+        await apiRequest('/clear', {
+            method: 'DELETE',
+        });
         return true;
+    },
+
+    // Vérifier la santé de l'API
+    async checkHealth() {
+        try {
+            const response = await apiRequest('/health');
+            return response.data;
+        } catch (error) {
+            return { status: 'error', message: error.message };
+        }
+    },
+};
+
+// Service pour les catégories
+export const categoryService = {
+    // Obtenir toutes les catégories
+    async getCategories(filters = {}) {
+        const params = new URLSearchParams();
+
+        if (filters.type) params.append('type', filters.type);
+
+        const queryString = params.toString();
+        const endpoint = `/categories${queryString ? `?${queryString}` : ''}`;
+
+        const response = await apiRequest(endpoint);
+        return response.data || [];
+    },
+
+    // Obtenir une catégorie par ID
+    async getCategoryById(id) {
+        const response = await apiRequest(`/categories/${id}`);
+        return response.data;
+    },
+
+    // Obtenir les catégories par type
+    async getCategoriesByType(type) {
+        const response = await apiRequest(`/categories/type/${type}`);
+        return response.data || [];
+    },
+
+    // Créer une catégorie
+    async createCategory(category) {
+        const response = await apiRequest('/categories', {
+            method: 'POST',
+            body: JSON.stringify(category),
+        });
+        return response.data;
+    },
+
+    // Mettre à jour une catégorie
+    async updateCategory(id, data) {
+        const response = await apiRequest(`/categories/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+        return response.data;
+    },
+
+    // Supprimer une catégorie
+    async deleteCategory(id) {
+        await apiRequest(`/categories/${id}`, {
+            method: 'DELETE',
+        });
+        return true;
+    },
+};
+
+// Service d'authentification
+export const authService = {
+    // Inscription
+    async register(data) {
+        const response = await apiRequest('/auth/register', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+        return response.data;
+    },
+
+    // Connexion
+    async login(data) {
+        const response = await apiRequest('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+        return response.data;
+    },
+
+    // Obtenir les infos de l'utilisateur connecté
+    async getMe() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Non authentifié');
+        }
+
+        const response = await apiRequest('/auth/me', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    },
+
+    // Mettre à jour le profil
+    async updateProfile(data) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Non authentifié');
+        }
+
+        const response = await apiRequest('/auth/profile', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+        return response.data;
+    },
+
+    // Déconnexion
+    async logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return true;
+    },
+
+    // Vérifier si l'utilisateur est connecté
+    isAuthenticated() {
+        return !!localStorage.getItem('token');
+    },
+
+    // Obtenir l'utilisateur stocké
+    getStoredUser() {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
+    },
+
+    // Obtenir le token
+    getToken() {
+        return localStorage.getItem('token');
     },
 };
 

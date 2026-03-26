@@ -33,16 +33,16 @@ ChartJS.register(
 );
 
 const CHART_COLORS = [
-    '#0ea5e9',
+    '#1C5BA0',
+    '#F77B17',
+    '#3D6088',
+    '#001A47',
+    '#7494BD',
     '#10b981',
-    '#f59e0b',
     '#ef4444',
     '#8b5cf6',
     '#ec4899',
     '#06b6d4',
-    '#84cc16',
-    '#f97316',
-    '#6366f1',
 ];
 
 export default function Reports() {
@@ -275,22 +275,22 @@ export default function Reports() {
         <div className="space-y-6 pb-24">
             {/* Header */}
             <div className="text-center py-4">
-                <h1 className="text-2xl font-bold text-slate-800">Rapports</h1>
-                <p className="text-slate-500 text-sm mt-1">
+                <h1 className="text-2xl font-bold text-dark-800">Rapports</h1>
+                <p className="text-secondary-500 text-sm mt-1">
                     Analysez vos finances
                 </p>
             </div>
 
             {/* Period Selector */}
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+            <div className="bg-white rounded-2xl p-4 shadow-sm border border-light-200 card-hover">
                 <div className="flex gap-2 mb-4">
                     {['week', 'month', 'year'].map((p) => (
                         <button
                             key={p}
                             onClick={() => setPeriod(p)}
                             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${period === p
-                                ? 'bg-sky-500 text-white'
-                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                ? 'bg-primary-500 text-white'
+                                : 'bg-light-100 text-secondary-600 hover:bg-light-200'
                                 }`}
                         >
                             {p === 'week'
@@ -307,7 +307,7 @@ export default function Reports() {
                         <select
                             value={selectedMonth}
                             onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                            className="flex-1 py-2 px-3 border border-slate-200 rounded-lg text-sm"
+                            className="flex-1 py-2 px-3 border border-light-300 rounded-lg text-sm"
                         >
                             {Array.from({ length: 12 }, (_, i) => (
                                 <option key={i} value={i}>
@@ -318,7 +318,7 @@ export default function Reports() {
                         <select
                             value={selectedYear}
                             onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                            className="flex-1 py-2 px-3 border border-slate-200 rounded-lg text-sm"
+                            className="flex-1 py-2 px-3 border border-light-300 rounded-lg text-sm"
                         >
                             {Array.from({ length: 5 }, (_, i) => {
                                 const year = new Date().getFullYear() - 2 + i;
@@ -351,13 +351,13 @@ export default function Reports() {
 
             {/* Balance */}
             <div
-                className={`rounded-2xl p-4 ${stats.balance >= 0
+                className={`rounded-2xl p-4 card-hover ${stats.balance >= 0
                     ? 'bg-emerald-50 border border-emerald-200'
                     : 'bg-red-50 border border-red-200'
                     }`}
             >
                 <div className="flex items-center justify-between">
-                    <span className="font-medium text-slate-700">
+                    <span className="font-medium text-dark-700">
                         Solde de la période
                     </span>
                     <span
@@ -369,15 +369,15 @@ export default function Reports() {
                         {formatCurrency(stats.balance)}
                     </span>
                 </div>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-secondary-500 mt-1">
                     {stats.transactionCount} transaction(s)
                 </p>
             </div>
 
             {/* Expense Chart */}
             {expenseByCategory.labels.length > 0 && (
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <h3 className="font-semibold text-slate-800 mb-4">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                    <h3 className="font-semibold text-dark-800 mb-4">
                         Répartition des dépenses
                     </h3>
                     <div className="h-64">
@@ -388,8 +388,8 @@ export default function Reports() {
 
             {/* Income Chart */}
             {incomeByCategory.labels.length > 0 && (
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <h3 className="font-semibold text-slate-800 mb-4">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                    <h3 className="font-semibold text-dark-800 mb-4">
                         Répartition des revenus
                     </h3>
                     <div className="h-64">
@@ -400,8 +400,8 @@ export default function Reports() {
 
             {/* Daily Evolution */}
             {dailyData.labels.length > 0 && (
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <h3 className="font-semibold text-slate-800 mb-4">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                    <h3 className="font-semibold text-dark-800 mb-4">
                         Évolution quotidienne
                     </h3>
                     <div className="h-64">
@@ -411,12 +411,12 @@ export default function Reports() {
             )}
 
             {/* Category Details */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                <h3 className="font-semibold text-slate-800 mb-4">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                <h3 className="font-semibold text-dark-800 mb-4">
                     Détail par catégorie
                 </h3>
                 {Object.keys(categoryStats).length === 0 ? (
-                    <p className="text-slate-500 text-center py-4">
+                    <p className="text-secondary-500 text-center py-4">
                         Aucune donnée pour cette période
                     </p>
                 ) : (
@@ -426,13 +426,13 @@ export default function Reports() {
                             .map(([category, data]) => (
                                 <div
                                     key={category}
-                                    className="flex items-center justify-between p-3 bg-slate-50 rounded-xl"
+                                    className="flex items-center justify-between p-3 bg-light-100 rounded-xl"
                                 >
                                     <div>
-                                        <p className="font-medium text-slate-700">
+                                        <p className="font-medium text-dark-700">
                                             {category}
                                         </p>
-                                        <p className="text-xs text-slate-500">
+                                        <p className="text-xs text-secondary-500">
                                             {data.count} transaction(s)
                                         </p>
                                     </div>
@@ -458,7 +458,7 @@ export default function Reports() {
             <div className="grid grid-cols-2 gap-3">
                 <button
                     onClick={exportCSV}
-                    className="py-4 bg-slate-800 text-white rounded-2xl font-semibold hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
+                    className="py-4 bg-dark-800 text-white rounded-2xl font-semibold hover:bg-dark-700 transition-colors flex items-center justify-center gap-2 btn-press"
                 >
                     <svg
                         className="w-5 h-5"
@@ -477,7 +477,7 @@ export default function Reports() {
                 </button>
                 <button
                     onClick={exportExcel}
-                    className="py-4 bg-emerald-600 text-white rounded-2xl font-semibold hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                    className="py-4 bg-emerald-600 text-white rounded-2xl font-semibold hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 btn-press"
                 >
                     <svg
                         className="w-5 h-5"

@@ -25,22 +25,15 @@ export default function PWAInstallPopup() {
         const handleBeforeInstallPrompt = (e) => {
             e.preventDefault();
             setDeferredPrompt(e);
-
-            // Show popup if not dismissed and not standalone
-            if (!hasDismissed && !isInStandaloneMode) {
-                setTimeout(() => {
-                    setShowInstallPopup(true);
-                }, 3000); // Show after 3 seconds
-            }
         };
 
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-        // For iOS, show popup if not in standalone mode and not dismissed
-        if (isIOSDevice && !isInStandaloneMode && !hasDismissed) {
+        // Show popup if not dismissed and not standalone (for both iOS and other devices)
+        if (!hasDismissed && !isInStandaloneMode) {
             setTimeout(() => {
                 setShowInstallPopup(true);
-            }, 3000);
+            }, 2000); // Show after 2 seconds
         }
 
         return () => {
@@ -56,6 +49,10 @@ export default function PWAInstallPopup() {
                 setShowInstallPopup(false);
             }
             setDeferredPrompt(null);
+        } else {
+            // Fallback: show instructions for manual install
+            alert('Pour installer l\'application :\n\n1. Ouvrez le menu de votre navigateur (3 points)\n2. Sélectionnez "Ajouter à l\'écran d\'accueil" ou "Installer l\'application"\n3. Confirmez l\'installation');
+            setShowInstallPopup(false);
         }
     };
 
@@ -74,8 +71,12 @@ export default function PWAInstallPopup() {
                 <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-4"></div>
 
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <span className="text-3xl">💰</span>
+                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden">
+                        <img
+                            src="/finance-logo.jpg"
+                            alt="Financia Logo"
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                     <h3 className="text-xl font-bold text-slate-800 mb-2">
                         Installer Financia

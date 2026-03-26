@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '../services/database';
+import { transactionService, authService } from '../services/database';
 import toast from 'react-hot-toast';
 
 const INCOME_CATEGORIES = [
@@ -74,7 +74,14 @@ export default function AddTransaction() {
             return;
         }
 
+        const user = authService.getStoredUser();
+        if (!user || !user.id) {
+            toast.error('Utilisateur non authentifié');
+            return;
+        }
+
         mutation.mutate({
+            user_id: user.id,
             type,
             amount: parseFloat(amount),
             category,
@@ -87,17 +94,17 @@ export default function AddTransaction() {
         <div className="space-y-6 pb-24">
             {/* Header */}
             <div className="text-center py-4">
-                <h1 className="text-2xl font-bold text-slate-800">
+                <h1 className="text-2xl font-bold text-dark-800">
                     Nouvelle Transaction
                 </h1>
-                <p className="text-slate-500 text-sm mt-1">
+                <p className="text-secondary-500 text-sm mt-1">
                     Ajoutez un revenu ou une dépense
                 </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Type Toggle */}
-                <div className="bg-slate-100 p-1 rounded-xl flex">
+                <div className="bg-light-100 p-1 rounded-xl flex">
                     <button
                         type="button"
                         onClick={() => {
@@ -105,8 +112,8 @@ export default function AddTransaction() {
                             setCategory('');
                         }}
                         className={`flex-1 py-3 rounded-lg font-medium transition-all ${type === 'expense'
-                                ? 'bg-white text-red-500 shadow-sm'
-                                : 'text-slate-500'
+                            ? 'bg-white text-red-500 shadow-sm'
+                            : 'text-secondary-500'
                             }`}
                     >
                         📉 Dépense
@@ -118,8 +125,8 @@ export default function AddTransaction() {
                             setCategory('');
                         }}
                         className={`flex-1 py-3 rounded-lg font-medium transition-all ${type === 'income'
-                                ? 'bg-white text-emerald-500 shadow-sm'
-                                : 'text-slate-500'
+                            ? 'bg-white text-emerald-500 shadow-sm'
+                            : 'text-secondary-500'
                             }`}
                     >
                         📈 Revenu
@@ -127,8 +134,8 @@ export default function AddTransaction() {
                 </div>
 
                 {/* Montant */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                    <label className="block text-sm font-medium text-dark-700 mb-2">
                         Montant (FCFA)
                     </label>
                     <div className="relative">
@@ -139,14 +146,14 @@ export default function AddTransaction() {
                             placeholder="0"
                             min="0"
                             step="1"
-                            className="w-full text-3xl font-bold text-center py-4 border-0 border-b-2 border-slate-200 focus:border-sky-500 focus:outline-none bg-transparent"
+                            className="w-full text-3xl font-bold text-center py-4 border-0 border-b-2 border-light-300 focus:border-primary-500 focus:outline-none bg-transparent"
                         />
                     </div>
                 </div>
 
                 {/* Catégorie */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <label className="block text-sm font-medium text-slate-700 mb-3">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                    <label className="block text-sm font-medium text-dark-700 mb-3">
                         Catégorie
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -156,10 +163,10 @@ export default function AddTransaction() {
                                 type="button"
                                 onClick={() => setCategory(cat)}
                                 className={`py-3 px-2 rounded-xl text-sm font-medium transition-all ${category === cat
-                                        ? type === 'income'
-                                            ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-500'
-                                            : 'bg-red-100 text-red-700 border-2 border-red-500'
-                                        : 'bg-slate-50 text-slate-600 border-2 border-transparent hover:bg-slate-100'
+                                    ? type === 'income'
+                                        ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-500'
+                                        : 'bg-red-100 text-red-700 border-2 border-red-500'
+                                    : 'bg-light-100 text-secondary-600 border-2 border-transparent hover:bg-light-200'
                                     }`}
                             >
                                 {cat}
@@ -169,21 +176,21 @@ export default function AddTransaction() {
                 </div>
 
                 {/* Date */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                    <label className="block text-sm font-medium text-dark-700 mb-2">
                         Date
                     </label>
                     <input
                         type="date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
-                        className="w-full py-3 px-4 border border-slate-200 rounded-xl focus:border-sky-500 focus:outline-none"
+                        className="w-full py-3 px-4 border border-light-300 rounded-xl focus:border-primary-500 focus:outline-none"
                     />
                 </div>
 
                 {/* Description */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                    <label className="block text-sm font-medium text-dark-700 mb-2">
                         Description (optionnel)
                     </label>
                     <textarea
@@ -191,7 +198,7 @@ export default function AddTransaction() {
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Ajoutez une note..."
                         rows={3}
-                        className="w-full py-3 px-4 border border-slate-200 rounded-xl focus:border-sky-500 focus:outline-none resize-none"
+                        className="w-full py-3 px-4 border border-light-300 rounded-xl focus:border-primary-500 focus:outline-none resize-none"
                     />
                 </div>
 
@@ -200,8 +207,8 @@ export default function AddTransaction() {
                     type="submit"
                     disabled={mutation.isPending}
                     className={`w-full py-4 rounded-2xl font-semibold text-white shadow-lg transition-all ${type === 'income'
-                            ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
-                            : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700'
+                        ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
+                        : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700'
                         } ${mutation.isPending
                             ? 'opacity-50 cursor-not-allowed'
                             : 'active:scale-[0.98]'

@@ -218,21 +218,21 @@ export default function Settings() {
         <div className="space-y-6 pb-24">
             {/* Header */}
             <div className="text-center py-4">
-                <h1 className="text-2xl font-bold text-slate-800">Paramètres</h1>
-                <p className="text-slate-500 text-sm mt-1">
+                <h1 className="text-2xl font-bold text-dark-800">Paramètres</h1>
+                <p className="text-secondary-500 text-sm mt-1">
                     Gérez votre application
                 </p>
             </div>
 
             {/* Categories */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-slate-800">
+                    <h3 className="font-semibold text-dark-800">
                         Catégories disponibles
                     </h3>
                     <button
                         onClick={() => setShowAddCategory(true)}
-                        className="px-3 py-1 bg-sky-500 text-white rounded-lg text-sm font-medium hover:bg-sky-600 transition-colors"
+                        className="px-3 py-1 bg-primary-500 text-white rounded-lg text-sm font-medium hover:bg-primary-600 transition-colors btn-press"
                     >
                         + Ajouter
                     </button>
@@ -296,23 +296,23 @@ export default function Settings() {
             </div>
 
             {/* Notifications */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                <h3 className="font-semibold text-slate-800 mb-4">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                <h3 className="font-semibold text-dark-800 mb-4">
                     Notifications
                 </h3>
 
                 <div className="space-y-3">
                     {/* Toggle Notifications */}
-                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                    <div className="flex items-center justify-between p-4 bg-light-100 rounded-xl">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
                                 <span className="text-xl">🔔</span>
                             </div>
                             <div className="text-left">
-                                <p className="font-medium text-slate-800">
+                                <p className="font-medium text-dark-800">
                                     Notifications push
                                 </p>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-secondary-500">
                                     Recevez des rappels et alertes
                                 </p>
                             </div>
@@ -321,14 +321,14 @@ export default function Settings() {
                             onClick={toggleNotifications}
                             disabled={isLoadingNotifications}
                             className={`relative w-14 h-7 rounded-full transition-colors ${notificationsEnabled
-                                    ? 'bg-emerald-500'
-                                    : 'bg-slate-300'
+                                ? 'bg-emerald-500'
+                                : 'bg-slate-300'
                                 }`}
                         >
                             <span
                                 className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${notificationsEnabled
-                                        ? 'translate-x-8'
-                                        : 'translate-x-1'
+                                    ? 'translate-x-8'
+                                    : 'translate-x-1'
                                     }`}
                             />
                         </button>
@@ -372,8 +372,8 @@ export default function Settings() {
             </div>
 
             {/* Data Management */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                <h3 className="font-semibold text-slate-800 mb-4">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                <h3 className="font-semibold text-dark-800 mb-4">
                     Gestion des données
                 </h3>
 
@@ -382,23 +382,23 @@ export default function Settings() {
                     <button
                         onClick={() => exportMutation.mutate()}
                         disabled={exportMutation.isPending}
-                        className="w-full flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
+                        className="w-full flex items-center justify-between p-4 bg-light-100 rounded-xl hover:bg-light-200 transition-colors btn-press"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-sky-100 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
                                 <span className="text-xl">📤</span>
                             </div>
                             <div className="text-left">
-                                <p className="font-medium text-slate-800">
+                                <p className="font-medium text-dark-800">
                                     Exporter en JSON
                                 </p>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-secondary-500">
                                     Sauvegardez vos transactions
                                 </p>
                             </div>
                         </div>
                         <svg
-                            className="w-5 h-5 text-slate-400"
+                            className="w-5 h-5 text-secondary-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -415,7 +415,7 @@ export default function Settings() {
                     {/* Export Excel */}
                     <button
                         onClick={exportExcel}
-                        className="w-full flex items-center justify-between p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors"
+                        className="w-full flex items-center justify-between p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors btn-press"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
@@ -449,23 +449,23 @@ export default function Settings() {
                     <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={importMutation.isPending}
-                        className="w-full flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
+                        className="w-full flex items-center justify-between p-4 bg-light-100 rounded-xl hover:bg-light-200 transition-colors btn-press"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
                                 <span className="text-xl">📥</span>
                             </div>
                             <div className="text-left">
-                                <p className="font-medium text-slate-800">
+                                <p className="font-medium text-dark-800">
                                     Importer des données
                                 </p>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-secondary-500">
                                     Restaurez une sauvegarde
                                 </p>
                             </div>
                         </div>
                         <svg
-                            className="w-5 h-5 text-slate-400"
+                            className="w-5 h-5 text-secondary-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -489,7 +489,7 @@ export default function Settings() {
                     {/* Clear Data */}
                     <button
                         onClick={() => setShowConfirmClear(true)}
-                        className="w-full flex items-center justify-between p-4 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
+                        className="w-full flex items-center justify-between p-4 bg-red-50 rounded-xl hover:bg-red-100 transition-colors btn-press"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -559,35 +559,35 @@ export default function Settings() {
             )}
 
             {/* App Info */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                <h3 className="font-semibold text-slate-800 mb-4">
-                    À propos de l&apos;application
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-light-200 card-hover">
+                <h3 className="font-semibold text-dark-800 mb-4">
+                    À propos de l'application
                 </h3>
 
                 <div className="space-y-3">
                     <div className="flex items-center justify-between py-2">
-                        <span className="text-slate-600">Version</span>
-                        <span className="font-medium text-slate-800">1.0.0</span>
+                        <span className="text-secondary-600">Version</span>
+                        <span className="font-medium text-dark-800">1.0.0</span>
                     </div>
                     <div className="flex items-center justify-between py-2">
-                        <span className="text-slate-600">Stockage</span>
-                        <span className="font-medium text-slate-800">
+                        <span className="text-secondary-600">Stockage</span>
+                        <span className="font-medium text-dark-800">
                             IndexedDB
                         </span>
                     </div>
                     <div className="flex items-center justify-between py-2">
-                        <span className="text-slate-600">Type</span>
-                        <span className="font-medium text-slate-800">PWA</span>
+                        <span className="text-secondary-600">Type</span>
+                        <span className="font-medium text-dark-800">PWA</span>
                     </div>
                 </div>
             </div>
 
             {/* Credits */}
             <div className="text-center py-4">
-                <p className="text-slate-400 text-sm">
+                <p className="text-secondary-400 text-sm">
                     Financia © 2026
                 </p>
-                <p className="text-slate-400 text-xs mt-1">
+                <p className="text-secondary-400 text-xs mt-1">
                     Gestion des finances personnelles
                 </p>
             </div>
@@ -596,25 +596,25 @@ export default function Settings() {
             {showAddCategory && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
-                        <h3 className="text-lg font-semibold text-slate-800 mb-4">
+                        <h3 className="text-lg font-semibold text-dark-800 mb-4">
                             Ajouter une catégorie
                         </h3>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">
+                                <label className="block text-sm font-medium text-dark-700 mb-2">
                                     Type
                                 </label>
                                 <select
                                     value={newCategoryType}
                                     onChange={(e) => setNewCategoryType(e.target.value)}
-                                    className="w-full py-2 px-3 border border-slate-200 rounded-lg"
+                                    className="w-full py-2 px-3 border border-light-300 rounded-lg"
                                 >
                                     <option value="expense">Dépense</option>
                                     <option value="income">Revenu</option>
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">
+                                <label className="block text-sm font-medium text-dark-700 mb-2">
                                     Nom de la catégorie
                                 </label>
                                 <input
@@ -622,7 +622,7 @@ export default function Settings() {
                                     value={newCategoryName}
                                     onChange={(e) => setNewCategoryName(e.target.value)}
                                     placeholder="Ex: Courses, Loyer..."
-                                    className="w-full py-2 px-3 border border-slate-200 rounded-lg"
+                                    className="w-full py-2 px-3 border border-light-300 rounded-lg"
                                 />
                             </div>
                             <div className="flex gap-3">
@@ -631,13 +631,13 @@ export default function Settings() {
                                         setShowAddCategory(false);
                                         setNewCategoryName('');
                                     }}
-                                    className="flex-1 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
+                                    className="flex-1 py-3 bg-light-100 text-dark-700 rounded-xl font-medium hover:bg-light-200 transition-colors btn-press"
                                 >
                                     Annuler
                                 </button>
                                 <button
                                     onClick={addCategory}
-                                    className="flex-1 py-3 bg-sky-500 text-white rounded-xl font-medium hover:bg-sky-600 transition-colors"
+                                    className="flex-1 py-3 bg-primary-500 text-white rounded-xl font-medium hover:bg-primary-600 transition-colors btn-press"
                                 >
                                     Ajouter
                                 </button>
